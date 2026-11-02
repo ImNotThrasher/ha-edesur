@@ -57,7 +57,7 @@ The integration defines:
 | Entity | Description |
 | --- | --- |
 | Linked contracts | Number of contracts associated with the account |
-| Meter number | Meter identifier for each discovered contract, when available |\n| Latest consumption and reading | Most recent API-reported active consumption and cumulative reading (units not yet confirmed) |\n| Last reading date | Date of the latest meter reading |\n| Latest invoice | Amount in ARS, issue date, first and second due dates |\n| Latest payment | Amount in ARS and payment date |\n| Supply status | Raw status reported by Edesur |
+| Meter number | Meter identifier for each discovered contract, when available |\n| Latest consumption and reading | Most recent API-reported active consumption and cumulative reading (active consumption in kWh; cumulative reading unit not yet confirmed) |\n| Last reading date | Date of the latest meter reading |\n| Latest invoice | Amount in ARS, issue date, first and second due dates |\n| Latest payment | Amount in ARS and payment date |\n| Supply status | Raw status reported by Edesur |
 
 Sensors are created separately for each contract. Invoice number and payment method are exposed as limited attributes. Download URLs are not exposed.
 
@@ -67,7 +67,7 @@ Sensors are created separately for each contract. Invoice number and payment met
 - Only the manual Google/social identifier method is implemented; email/password login is not supported.
 - Edesur's undocumented API can change or become unavailable.
 - The integration does not control electricity supply, make payments, or modify account details.
-- Only the latest reading, invoice and payment are exposed; full history is not yet modeled as statistics or entities.\n- Consumption and cumulative reading units have not been confirmed, so they are intentionally not tagged as kWh or energy statistics.\n- The debt endpoint requires an unresolved `supply_number` distinct from the contract account; its request and identifier mapping are not verified.\n- Outstanding balance, whether an invoice is unpaid, and overdue debt cannot be inferred reliably from invoice dates or payment history; no debt or unpaid-status sensor is provided.\n- `remainingConsumption` and peak/night reading semantics remain unverified and are not exposed.
+- Only the latest reading, invoice and payment are exposed; full history is not yet modeled as statistics or entities.\n- Period consumption (`activeConsumption`) is confirmed in kWh and exposed as an energy sensor without `total_increasing` state class. Cumulative meter reading (`activeReading`) still needs separate unit and semantics verification.\n- The debt endpoint requires an unresolved `supply_number` distinct from the contract account; its request and identifier mapping are not verified.\n- Outstanding balance, whether an invoice is unpaid, and overdue debt cannot be inferred reliably from invoice dates or payment history; no debt or unpaid-status sensor is provided.\n- `remainingConsumption` and peak/night reading semantics remain unverified and are not exposed.
 
 ## Privacy and security
 
