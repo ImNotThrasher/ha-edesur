@@ -38,9 +38,8 @@ class EdesurApi:
     ) -> Any:
         headers = {"Accept": "application/json"}
         if authenticated:
-            if not self._token:
-                raise EdesurAuthError("Missing authentication token")
-            headers["Authorization"] = f"Bearer {self._token}"
+            if self._token:
+                headers["Authorization"] = f"Bearer {self._token}"
         else:
             # These headers were observed in the website request. Their
             # necessity outside the browser has not yet been verified.
@@ -77,9 +76,16 @@ class EdesurApi:
             payload={"socialMediaEmail": email, "socialMediaId": social_id},
             authenticated=False,
         )
-        if not isinstance(data, dict) or not isinstance(data.get("token"), str) or not data["token"].strip():
-            raise EdesurAuthError("Login did not return a token")
-        self._token = data["token"].strip()
+        if not isinstance(data, dict) or not isinstance(data.get("email"), str):
+            raise EdesurAuthError("Unexpected login response")
+        if data["email"].casefold() != email.casefold():
+            raise EdesurAuthError("Login returned a different account")
+        token = data.get("token")
+        if token is not None and not isinstance(token, str):
+            raise EdesurAuthError("Unexpected token format")
+        # Edesur may return an empty token. Discovery is the next validation
+        # step; this response alone is not proof of an authenticated session.
+        self._token = token.strip() if token else None
 
     async def get_accounts(self, email: str) -> list[str]:
         data = await self._request("GET", f"/Cliente/supply-retrieve/{quote(email, safe='')}")
