@@ -5,9 +5,10 @@
     "@ImNotThrasher"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/ImNotThrasher/ha-edesur",
+  "documentation": "https://github.com/ImNotThrasher/ha-edesur#readme",
   "integration_type": "hub",
   "iot_class": "cloud_polling",
   "requirements": [],
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "issue_tracker": "https://github.com/ImNotThrasher/ha-edesur/issues"
 }
