@@ -38,7 +38,6 @@ jobs:
       - uses: home-assistant/actions/hassfest@master
 
   hacs:
-    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
