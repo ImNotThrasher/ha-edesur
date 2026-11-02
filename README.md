@@ -17,7 +17,7 @@ Initial Home Assistant config flow, API client, polling coordinator, and discove
 1. Sign in to Edesur with Google in your browser.
 2. In browser DevTools, locate the `socialMediaId` sent to Edesur (`google_...`). Never share this identifier publicly.
 3. In Home Assistant, choose Google (manual identifier) and enter your email and full `socialMediaId`.
-4. The integration attempts login and contract discovery. Edesur may return an empty `token`; the implementation does not require a Bearer token when absent, but successful discovery does **not** prove server-side identity verification. This flow remains experimental.
+4. The integration attempts login and contract discovery. Edesur returns a nonempty Bearer `token` after successful login. The integration requires this token for authenticated requests. Previously shared empty token examples were intentionally redacted. This flow remains untested in Home Assistant.
 
 ## Authentication design
 The Home Assistant config flow starts with a **login method selector**. Only Google is enabled initially. Unsupported methods will be labeled as pending rather than attempting authentication. Authentication logic will be isolated from the account/sensor layers to support future methods.
