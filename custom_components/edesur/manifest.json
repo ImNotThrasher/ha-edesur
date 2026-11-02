@@ -1,6 +1,9 @@
 {
   "domain": "edesur",
   "name": "Edesur",
+  "after_dependencies": [
+    "recorder"
+  ],
   "codeowners": [
     "@ImNotThrasher"
   ],
@@ -8,10 +11,7 @@
   "documentation": "https://github.com/ImNotThrasher/ha-edesur#readme",
   "integration_type": "hub",
   "iot_class": "cloud_polling",
-  "requirements": [],
-  "version": "0.1.0",
   "issue_tracker": "https://github.com/ImNotThrasher/ha-edesur/issues",
-  "after_dependencies": [
-    "recorder"
-  ]
+  "requirements": [],
+  "version": "0.1.0"
 }
