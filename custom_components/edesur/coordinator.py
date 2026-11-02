@@ -44,14 +44,16 @@ class EdesurCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
                         return await fetch(account)
                     except EdesurError:
                         return None
-                debts, formalities = await asyncio.gather(
-                    optional(self.api.get_debts), optional(self.api.get_formalities)
+                debts, formalities, agreements = await asyncio.gather(
+                    optional(self.api.get_debts), optional(self.api.get_formalities),
+                    optional(self.api.get_agreements)
                 )
                 result[account] = {
                     "client": client, "readings": readings,
                     "invoices": invoices, "payments": payments,
                     "supply_status": status,
                     "debts": debts, "formalities": formalities,
+                    "agreements": agreements,
                 }
             return result
         except EdesurAuthError as err:
