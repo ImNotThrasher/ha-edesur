@@ -31,8 +31,7 @@ La colección comprueba códigos HTTP y la presencia de estructuras mínimas, no
 ## Decisiones de mantenimiento
 - La capa API centraliza endpoints y errores.
 - El coordinador consulta contratos en cada actualización; hasta conocer el TTL del token, reautentica en cada ciclo.
-- Los sensores solo muestran datos con estructura conocida: cantidad de contratos y número de medidor.
-- No hay sensores monetarios ni de consumo hasta validar unidades, fechas y formatos.
+- Los sensores implementados incluyen contratos, medidor, consumo, lecturas, facturas, pagos, deuda, trámites y convenios. La importación histórica utiliza estadísticas externas de Recorder. Consultar el README para la lista actualizada de entidades.
 - La colección no almacena contraseñas, tokens ni datos personales.
 
 ## Validated response fields and deferred mappings (2026-11)
@@ -46,7 +45,7 @@ Implemented: latest active consumption, latest cumulative active reading, last r
 - Debt, unpaid invoice status, overdue amounts and account balance cannot be derived safely from invoice totals, due dates and payment history alone. Wait for a validated authoritative debt/status response.
 - `activeConsumption` is confirmed as period consumption in kWh; it is not a monotonically increasing meter total. `activeReading` still needs independent confirmation before assigning its unit or statistics semantics.
 - `remainingConsumption`, `activeConsumptionHP`, `activeConsumptionNight`, `nightReading`, `peakReading`, `remainingReading` require business-semantic verification before mapping.
-- Full historical series, tariff group, social rate and electrodependence metadata may be exposed later after reviewing privacy and appropriate entity models.
+- Historical consumption is imported into Recorder as external long-term statistics; tariff group, social rate and electrodependence metadata remain deferred pending privacy and entity-model review.
 
 Never commit raw API response examples containing customer names, addresses, invoice download URLs, or authentication values.
 
@@ -59,4 +58,8 @@ Never commit raw API response examples containing customer names, addresses, inv
 
 ## Payment agreements (2026-11)
 
-Observed `GET /PlanPagos/retrieve-agreement/{contractAccount}` with `agreements[]` (historical) and `current` (active agreement or other state). Observed fields: `type`, `state`, `advance`, `currentDebt`, `applicationNumber`, `numberInstallments`, `openingDate`, `closingDate`, `url`, `barCode`. An example `current.state` was `Vigente`, while historical states included `Cancelado` and `Quitado`. Do not equate `currentDebt` with overdue account debt; verify semantics. Do not expose `url`, `barCode` or customer-specific application identifiers in logs, diagnostics, or public docs. This endpoint is in Postman for testing; no Home Assistant entities are implemented yet.
+Observed `GET /PlanPagos/retrieve-agreement/{contractAccount}` with `agreements[]` (historical) and `current` (active agreement or other state). Observed fields: `type`, `state`, `advance`, `currentDebt`, `applicationNumber`, `numberInstallments`, `openingDate`, `closingDate`, `url`, `barCode`. An example `current.state` was `Vigente`, while historical states included `Cancelado` and `Quitado`. Do not equate `currentDebt` with overdue account debt; verify semantics. Do not expose `url`, `barCode` or customer-specific application identifiers in logs, diagnostics, or public docs. This endpoint is in Postman for testing; Home Assistant exposes the current agreement status and selected safe attributes, without publishing agreement URLs or barcodes.
+
+## Auditoría previa a publicación (2026-11)
+
+Este documento contiene ejemplos de estructura y estados, no respuestas de clientes reales. La colección Postman usa variables vacías para correo, identificador social, token y números de suministro; no publicar entornos exportados con valores privados. Revisar nuevamente el repositorio antes de hacerlo público, especialmente archivos nuevos, historial Git y capturas de pantalla. El historial de Git puede conservar valores que se hayan eliminado de versiones posteriores.
