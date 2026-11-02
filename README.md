@@ -20,7 +20,7 @@ Edesur (Empresa Distribuidora de Energía Sur Sociedad Anónima) is a private co
 - [Limitations](#limitations)
 - [Privacy and security](#privacy-and-security)
 - [Contributing](#contributing)
-- [License](#license)
+- [License and trademarks](#license-and-trademarks)
 
 ## Features
 
@@ -79,6 +79,8 @@ This is an independent, unofficial project. Use it at your own risk.
 
 Bug reports and contributions are welcome through [GitHub Issues](https://github.com/ImNotThrasher/ha-edesur/issues). Technical API research and the sanitized Postman collection are available in [docs](docs/).
 
-## License
+## License and trademarks
 
-Distributed under the [GNU General Public License v3.0](LICENSE).
+The source code is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. See [LICENSE](LICENSE).
+
+**Edesur** and any associated names, trademarks, service marks, and logos are the property of their respective owners. This is an independent, community-developed project and is **not affiliated with, endorsed by, sponsored by, or officially supported by Edesur**. References to Edesur are for identification and compatibility purposes only. The software license does not grant permission to use third-party trademarks or logos.
