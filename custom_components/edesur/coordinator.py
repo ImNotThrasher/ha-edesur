@@ -38,10 +38,20 @@ class EdesurCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
                     self.api.get_payments(account),
                     self.api.get_supply_status(account),
                 )
+                # Optional endpoints must not break existing readings/invoices if unavailable.
+                async def optional(fetch):
+                    try:
+                        return await fetch(account)
+                    except EdesurError:
+                        return None
+                debts, formalities = await asyncio.gather(
+                    optional(self.api.get_debts), optional(self.api.get_formalities)
+                )
                 result[account] = {
                     "client": client, "readings": readings,
                     "invoices": invoices, "payments": payments,
                     "supply_status": status,
+                    "debts": debts, "formalities": formalities,
                 }
             return result
         except EdesurAuthError as err:
