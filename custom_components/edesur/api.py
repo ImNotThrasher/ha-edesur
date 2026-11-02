@@ -111,6 +111,14 @@ class EdesurApi:
     async def get_supply_status(self, account: str) -> Any:
         return await self._request("GET", f"/Cliente/get-cut-supply/{quote(account, safe='')}")
 
+    async def get_debts(self, account: str) -> Any:
+        """Read account debts; only the observed no-debt response is validated."""
+        encoded = quote(account, safe='')
+        return await self._request('GET', f'/PlanPagos/get-debts?contractAccount={encoded}&serchType=1&value={encoded}')
+
+    async def get_formalities(self, account: str) -> Any:
+        return await self._request('GET', f'/Cliente/get-formalities/{quote(account, safe="")}')
+
     async def get_debt(self, supply_number: str) -> Any:
         """Experimental: POST method and supply identifier need validation."""
         return await self._request("POST", "/PlanPagos/GetDeudaAsync", payload={
