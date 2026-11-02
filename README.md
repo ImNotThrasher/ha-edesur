@@ -10,7 +10,14 @@ Unofficial Home Assistant integration for Edesur Argentina. **Work in progress**
 - Meter information, historical readings, invoices, payments, supply status and debt, subject to API validation.
 
 ## Development status
-Initial Home Assistant config flow, API client, polling coordinator, and discovery sensors are implemented but **not yet validated against live credentials or a running Home Assistant instance**. The current Google/social flow requires a manually supplied social identifier; a native Google sign-in flow remains pending. Google social login is not the same thing as implementing Google's OAuth protocol independently.
+Initial Home Assistant config flow, API client, polling coordinator, and discovery sensors are implemented but **not yet validated against live credentials or a running Home Assistant instance**. The current Google/social flow requires a manually supplied social identifier; a native Google sign-in flow is out of scope for now; no Google Cloud setup is needed. Google social login is not the same thing as implementing Google's OAuth protocol independently.
+
+## Manual Google login setup
+
+1. Sign in to Edesur with Google in your browser.
+2. In browser DevTools, locate the `socialMediaId` sent to Edesur (`google_...`). Never share this identifier publicly.
+3. In Home Assistant, choose Google (manual identifier) and enter your email and full `socialMediaId`.
+4. The integration attempts login and contract discovery. Edesur may return an empty `token`; the implementation does not require a Bearer token when absent, but successful discovery does **not** prove server-side identity verification. This flow remains experimental.
 
 ## Authentication design
 The Home Assistant config flow starts with a **login method selector**. Only Google is enabled initially. Unsupported methods will be labeled as pending rather than attempting authentication. Authentication logic will be isolated from the account/sensor layers to support future methods.
