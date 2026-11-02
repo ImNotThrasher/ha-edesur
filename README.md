@@ -9,7 +9,7 @@ Edesur (Empresa Distribuidora de Energía Sur Sociedad Anónima) is an electrici
 > [!IMPORTANT]
 > This project is **not an official Edesur integration** and is not developed, endorsed, supported, or affiliated with Edesur. It uses an undocumented API that may change without notice.
 >
-> **Development status:** experimental. The integration has not yet been validated on a running Home Assistant installation.
+> **Development status:** experimental. Manual installation and account discovery have been tested on a running Home Assistant instance; the new historical sensors still require validation.
 
 ## Contents
 
@@ -24,14 +24,14 @@ Edesur (Empresa Distribuidora de Energía Sur Sociedad Anónima) is an electrici
 
 ## Features
 
-Currently implemented in code (pending real-world validation):
+Currently implemented:
 
 - Google/social account login using a manually supplied Edesur social identifier.
 - Automatic discovery of multiple electricity contracts linked to an account.
 - Periodic refresh of account data.
-- Basic sensors for linked contracts and meter numbers.
+- Sensors for linked contracts and meter numbers.\n- Per-contract sensors for latest consumption and meter reading, reading date, latest invoice amount and dates, latest payment amount and date, and supply status.
 
-Planned features include historical electricity readings, invoices, payments, outstanding balances, due dates, and supply status. These are **not yet available as Home Assistant entities**.
+Historical API responses are queried; latest values are exposed as sensors. Debt, outstanding balances and payment status remain unverified and are not exposed.
 
 ## Installation
 
@@ -52,22 +52,22 @@ Keep the social identifier private. Never share access tokens, browser cookies, 
 
 ## Entities
 
-The initial version defines:
+The integration defines:
 
 | Entity | Description |
 | --- | --- |
 | Linked contracts | Number of contracts associated with the account |
-| Meter number | Meter identifier for each discovered contract, when available |
+| Meter number | Meter identifier for each discovered contract, when available |\n| Latest consumption and reading | Most recent API-reported active consumption and cumulative reading (units not yet confirmed) |\n| Last reading date | Date of the latest meter reading |\n| Latest invoice | Amount in ARS, issue date, first and second due dates |\n| Latest payment | Amount in ARS and payment date |\n| Supply status | Raw status reported by Edesur |
 
-Additional data may be fetched internally for research, but is not exposed as entities yet.
+Sensors are created separately for each contract. Invoice number and payment method are exposed as limited attributes. Download URLs are not exposed.
 
 ## Limitations
 
-- **Experimental:** installation, authentication, and sensors still require testing in Home Assistant.
+- **Experimental:** newly added sensors still require live validation.
 - Only the manual Google/social identifier method is implemented; email/password login is not supported.
 - Edesur's undocumented API can change or become unavailable.
 - The integration does not control electricity supply, make payments, or modify account details.
-- Historical readings, invoices, payments, debt, and due-date sensors are not implemented yet.
+- Only the latest reading, invoice and payment are exposed; full history is not yet modeled as statistics or entities.\n- Consumption and cumulative reading units have not been confirmed, so they are intentionally not tagged as kWh or energy statistics.\n- The debt endpoint requires an unresolved `supply_number` distinct from the contract account; its request and identifier mapping are not verified.\n- Outstanding balance, whether an invoice is unpaid, and overdue debt cannot be inferred reliably from invoice dates or payment history; no debt or unpaid-status sensor is provided.\n- `remainingConsumption` and peak/night reading semantics remain unverified and are not exposed.
 
 ## Privacy and security
 
