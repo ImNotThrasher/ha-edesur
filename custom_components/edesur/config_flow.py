@@ -37,6 +37,14 @@ class EdesurConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             email = user_input[CONF_EMAIL].strip().lower()
             social_id = user_input[CONF_SOCIAL_ID].strip()
+            if not social_id.startswith("google_") or len(social_id) <= len("google_"):
+                errors["base"] = "invalid_social_id"
+                return self.async_show_form(
+                    step_id="google",
+                    data_schema=vol.Schema({vol.Required(CONF_EMAIL): str,
+                                            vol.Required(CONF_SOCIAL_ID): str}),
+                    errors=errors,
+                )
             api = EdesurApi(async_get_clientsession(self.hass))
             try:
                 await api.login_google(email, social_id)
