@@ -38,8 +38,9 @@ class EdesurApi:
     ) -> Any:
         headers = {"Accept": "application/json"}
         if authenticated:
-            if self._token:
-                headers["Authorization"] = f"Bearer {self._token}"
+            if not self._token:
+                raise EdesurAuthError("Missing authentication token")
+            headers["Authorization"] = f"Bearer {self._token}"
         else:
             # These headers were observed in the website request. Their
             # necessity outside the browser has not yet been verified.
@@ -81,11 +82,9 @@ class EdesurApi:
         if data["email"].casefold() != email.casefold():
             raise EdesurAuthError("Login returned a different account")
         token = data.get("token")
-        if token is not None and not isinstance(token, str):
-            raise EdesurAuthError("Unexpected token format")
-        # Edesur may return an empty token. Discovery is the next validation
-        # step; this response alone is not proof of an authenticated session.
-        self._token = token.strip() if token else None
+        if not isinstance(token, str) or not token.strip():
+            raise EdesurAuthError("Login did not return a valid token")
+        self._token = token.strip()
 
     async def get_accounts(self, email: str) -> list[str]:
         data = await self._request("GET", f"/Cliente/supply-retrieve/{quote(email, safe='')}")
