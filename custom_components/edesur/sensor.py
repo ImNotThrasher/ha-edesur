@@ -54,7 +54,7 @@ def _number(value: Any) -> float | None:
 
 SENSORS = {
     "consumption": ("Último consumo", "readings", "readings", "readingDate", "activeConsumption", "number", "mdi:lightning-bolt"),
-    "reading": ("Lectura del medidor", "readings", "readings", "readingDate", "activeReading", "number", "mdi:counter"),
+    "reading": ("Última lectura del medidor", "readings", "readings", "readingDate", "activeReading", "number", "mdi:counter"),
     "reading_date": ("Fecha de última lectura", "readings", "readings", "readingDate", "readingDate", "date_iso", "mdi:calendar"),
     "invoice_amount": ("Importe de última factura", "invoices", "invoices", "issueDate", "totalAmount", "money", "mdi:cash"),
     "invoice_date": ("Emisión de última factura", "invoices", "invoices", "issueDate", "issueDate", "date_local", "mdi:calendar"),
