@@ -1,54 +1,84 @@
 # Edesur for Home Assistant
 
-Unofficial Home Assistant integration for Edesur Argentina. **Work in progress**; experimental and not validated against a live Home Assistant instance.
+[![HACS](https://img.shields.io/badge/HACS-Custom%20repository-blue.svg)](https://www.hacs.xyz/)
 
-## Features planned
-- Account authentication with a selectable login method.
-- **Google/social login**: first supported method (observed and used successfully by the project owner).
-- **Username/password** and other login methods: visible as future options, **not implemented** until their API flows are understood.
-- Automatic discovery of multiple contracts linked to the account.
-- Meter information, historical readings, invoices, payments, supply status and debt, subject to API validation.
+**Unofficial, community-maintained Home Assistant integration** for Edesur Argentina.
 
-## Development status
-Initial Home Assistant config flow, API client, polling coordinator, and discovery sensors are implemented but **not yet validated against live credentials or a running Home Assistant instance**. The current Google/social flow requires a manually supplied social identifier; a native Google sign-in flow is out of scope for now; no Google Cloud setup is needed. Google social login is not the same thing as implementing Google's OAuth protocol independently.
+Edesur (Empresa Distribuidora de Energía Sur Sociedad Anónima) is a private company providing the public service of electricity distribution and commercialization in Argentina. This integration aims to make information about your Edesur electricity accounts available in Home Assistant.
 
-## Manual Google login setup
+> [!IMPORTANT]
+> This project is **not an official Edesur integration** and is not developed, endorsed, supported, or affiliated with Edesur. It uses an undocumented API that may change without notice.
+>
+> **Development status:** experimental. The integration has not yet been validated on a running Home Assistant installation.
 
-1. Sign in to Edesur with Google in your browser.
-2. In browser DevTools, locate the `socialMediaId` sent to Edesur (`google_...`). Never share this identifier publicly.
-3. In Home Assistant, choose Google (manual identifier) and enter your email and full `socialMediaId`.
-4. The integration attempts login and contract discovery. Edesur returns a nonempty Bearer `token` after successful login. The integration requires this token for authenticated requests. Previously shared empty token examples were intentionally redacted. This flow remains untested in Home Assistant.
+## Contents
 
-## Authentication design
-The Home Assistant config flow starts with a **login method selector**. Only Google is enabled initially. Unsupported methods will be labeled as pending rather than attempting authentication. Authentication logic will be isolated from the account/sensor layers to support future methods.
+- [Features](#features)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Entities](#entities)
+- [Limitations](#limitations)
+- [Privacy and security](#privacy-and-security)
+- [Contributing](#contributing)
+- [License](#license)
 
-## API research
-The single consolidated Postman collection lives in `docs/postman/Edesur.postman_collection.json`. It uses placeholders such as `{{social_email}}`, `{{social_id}}` and `{{bearer_token}}`; fill these through **local Postman variables/environments**, never committed files.
+## Features
 
-Endpoints under `https://ed.edesur.com.ar/api`:
-- `POST /Usuario/login-social-media` — Google/social login request.
-- `GET /Cliente/supply-retrieve/{social_email}` — discover contracts.
-- `GET /Cliente/get-client/{client_id}` — contract details.
-- `GET /Cliente/get-historical-readings/{client_id}` — readings.
-- `GET /Cliente/get-historical-invoices/{client_id}` — invoices.
-- `GET /Cliente/get-historical-payments/{client_id}` — payments.
-- `GET /Cliente/get-cut-supply/{client_id}` — supply status.
-- `POST /PlanPagos/GetDeudaAsync` — debt; HTTP method still needs confirmation.
+Currently implemented in code (pending real-world validation):
 
-## Current entities
+- Google/social account login using a manually supplied Edesur social identifier.
+- Automatic discovery of multiple electricity contracts linked to an account.
+- Periodic refresh of account data.
+- Basic sensors for linked contracts and meter numbers.
 
-- Number of linked contracts.
-- Meter number per contract (when returned by the API).
+Planned features include historical electricity readings, invoices, payments, outstanding balances, due dates, and supply status. These are **not yet available as Home Assistant entities**.
 
-Historical consumption, invoices, payments, debt and due dates are **not yet mapped to entities**: their response schemas need validation. The coordinator currently fetches the four known read-only endpoints for each contract. Debt is available only as an experimental Postman/API-client operation.
+## Installation
 
-## Architecture principles
-Follow Home Assistant patterns: a dedicated async API client, `DataUpdateCoordinator`, config flow, separate sensor descriptions and tests with sanitized fixtures. Comment non-obvious blocks and API quirks, not every line. Never store credentials or tokens in Git, debug logs, documentation, committed JSON or diagnostics.
+HACS listing is **not available yet**. For testing, add this repository as a custom integration repository in HACS, select **Integration**, and install it. Restart Home Assistant after installation.
 
-## Branches
-All work goes to `dev`. The repository owner alone promotes reviewed changes to `main`.
+Alternatively, copy `custom_components/edesur` into your Home Assistant `config/custom_components/` directory and restart.
+
+## Configuration
+
+1. Sign in to the [Edesur online portal](https://ov.edesur.com.ar/) using your Google account.
+2. In your browser's developer tools (DevTools), inspect the Edesur social-login request and locate its `socialMediaId` value (starting with `google_`).
+3. In Home Assistant, open **Settings → Devices & services → Add integration**, search for **Edesur**, and select **Google (manual identifier)**.
+4. Enter the email address associated with your Edesur account and the complete `socialMediaId`.
+
+The integration uses these values to request an Edesur session token and discover linked contracts. **You do not need to create a Google Cloud project.** A built-in Google OAuth login is not implemented.
+
+Keep the social identifier private. Never share access tokens, browser cookies, or complete login requests.
+
+## Entities
+
+The initial version defines:
+
+| Entity | Description |
+| --- | --- |
+| Linked contracts | Number of contracts associated with the account |
+| Meter number | Meter identifier for each discovered contract, when available |
+
+Additional data may be fetched internally for research, but is not exposed as entities yet.
+
+## Limitations
+
+- **Experimental:** installation, authentication, and sensors still require testing in Home Assistant.
+- Only the manual Google/social identifier method is implemented; email/password login is not supported.
+- Edesur's undocumented API can change or become unavailable.
+- The integration does not control electricity supply, make payments, or modify account details.
+- Historical readings, invoices, payments, debt, and due-date sensors are not implemented yet.
+
+## Privacy and security
+
+The integration communicates with Edesur to access the account information required for its sensors. Your email and social identifier are stored in Home Assistant's integration configuration; the session token is kept in memory by the API client. Treat your Home Assistant backups as sensitive.
+
+This is an independent, unofficial project. Use it at your own risk.
+
+## Contributing
+
+Bug reports and contributions are welcome through [GitHub Issues](https://github.com/ImNotThrasher/ha-edesur/issues). Technical API research and the sanitized Postman collection are available in [docs](docs/).
 
 ## License
-[GNU General Public License v3.0](LICENSE).
 
-Not affiliated with Edesur.
+Distributed under the [GNU General Public License v3.0](LICENSE).
