@@ -332,6 +332,10 @@
               {
                 "key": "Accept",
                 "value": "application/json"
+              },
+              {
+                "key": "x-origin-channel",
+                "value": "{{origin_channel}}"
               }
             ],
             "url": "{{base_url}}/PlanPagos/get-debts?contractAccount={{client_id}}&serchType=1&value={{client_id}}",
@@ -363,6 +367,10 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "x-origin-channel",
+                "value": "{{origin_channel}}"
               }
             ],
             "url": "{{base_url}}/PlanPagos/GetDeudaAsync",
