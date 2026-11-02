@@ -1,6 +1,8 @@
 # Edesur for Home Assistant
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue)](custom_components/edesur/manifest.json)
+[![Latest release](https://img.shields.io/github/v/release/ImNotThrasher/ha-edesur?label=release)](https://github.com/ImNotThrasher/ha-edesur/releases/latest)
+[![Validation](https://github.com/ImNotThrasher/ha-edesur/actions/workflows/validate.yml/badge.svg?branch=dev)](https://github.com/ImNotThrasher/ha-edesur/actions/workflows/validate.yml)
+[![GitHub downloads](https://img.shields.io/github/downloads/ImNotThrasher/ha-edesur/total)](https://github.com/ImNotThrasher/ha-edesur/releases)
 [![HACS custom repository](https://img.shields.io/badge/HACS-custom%20repository-41BDF5)](https://www.hacs.xyz/)
 [![GitHub stars](https://img.shields.io/github/stars/ImNotThrasher/ha-edesur?style=flat)](https://github.com/ImNotThrasher/ha-edesur/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/ImNotThrasher/ha-edesur)](https://github.com/ImNotThrasher/ha-edesur/issues)
@@ -16,6 +18,7 @@
 
 ## Contents
 
+- [Releases](#releases)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -26,6 +29,10 @@
 - [Privacy and security](#privacy-and-security)
 - [Development](#development)
 - [License and trademarks](#license-and-trademarks)
+
+## Releases
+
+Releases will be published from the stable `main` branch once validation is complete. See [all releases](https://github.com/ImNotThrasher/ha-edesur/releases) or [latest release](https://github.com/ImNotThrasher/ha-edesur/releases/latest). **No release is being created by this change.** Until a release is available, use the HACS custom repository or manual installation instructions below.
 
 ## Features
 
@@ -146,9 +153,11 @@ These observations are **kWh per Edesur reading period**, associated with the mo
 
 ## Privacy and security
 
-The account email and `socialMediaId` are stored in the Home Assistant configuration entry; Edesur session tokens are held in memory by the API client. Keep your Home Assistant backups, `.storage` directory and network captures private. Never open public issues containing real contract numbers, meter numbers, credentials, social IDs or API tokens.
+The configuration form masks `socialMediaId` while you enter it; this does **not** encrypt the value at rest. The account email and `socialMediaId` are stored in the Home Assistant configuration entry; Edesur session tokens are held in memory by the API client. Keep your Home Assistant backups, `.storage` directory and network captures private. Never open public issues containing real contract numbers, meter numbers, credentials, social IDs or API tokens.
 
 ## Development
+
+GitHub Actions validates unit tests, critical Ruff checks, Python compilation, Hassfest and HACS compatibility on pushes and pull requests. A successful CI run does not guarantee that the unofficial Edesur API will remain compatible.
 
 The `dev` branch is used for ongoing development and testing. The `main` branch is reserved for reviewed, stable changes. Do not assume a change in `dev` has been released.
 
