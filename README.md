@@ -1,7 +1,7 @@
 # Edesur for Home Assistant
 
 [![Latest release](https://img.shields.io/github/v/release/ImNotThrasher/ha-edesur?label=release)](https://github.com/ImNotThrasher/ha-edesur/releases/latest)
-[![Validation](https://github.com/ImNotThrasher/ha-edesur/actions/workflows/validate.yml/badge.svg?branch=dev)](https://github.com/ImNotThrasher/ha-edesur/actions/workflows/validate.yml)
+[![Validation](https://github.com/ImNotThrasher/ha-edesur/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/ImNotThrasher/ha-edesur/actions/workflows/validate.yml)
 [![GitHub downloads](https://img.shields.io/github/downloads/ImNotThrasher/ha-edesur/total)](https://github.com/ImNotThrasher/ha-edesur/releases)
 [![HACS custom repository](https://img.shields.io/badge/HACS-custom%20repository-41BDF5)](https://www.hacs.xyz/)
 [![GitHub stars](https://img.shields.io/github/stars/ImNotThrasher/ha-edesur?style=flat)](https://github.com/ImNotThrasher/ha-edesur/stargazers)
