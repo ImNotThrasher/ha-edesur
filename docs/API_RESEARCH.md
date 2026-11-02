@@ -56,3 +56,7 @@ Never commit raw API response examples containing customer names, addresses, inv
 - `GET /Cliente/get-formalities/{account}`: `{ "formalities": [{ "attentionType": "Requerimiento", "status": "ESTA007", "openingDate": "...", "closingDate": "...", "caseNumber": "...", "reason": "Comercial", "subReason": "Adhesión a E-Factura Digital", "statusDescription": "Cerrado", "claimNumber": null, "reasonCode": "MOT003", "subReasonCode": "ATAR183" }] }`. Only latest status/date and minimal case metadata exposed.
 - Last payment vs last invoice equality is not a validated paid indicator. Never infer paid status from matching amounts or elapsed due dates.
 - Historical consumption is available as a limited `history` attribute on latest-consumption sensor; do not interpret zero as missing without evidence.
+
+## Payment agreements (2026-11)
+
+Observed `GET /PlanPagos/retrieve-agreement/{contractAccount}` with `agreements[]` (historical) and `current` (active agreement or other state). Observed fields: `type`, `state`, `advance`, `currentDebt`, `applicationNumber`, `numberInstallments`, `openingDate`, `closingDate`, `url`, `barCode`. An example `current.state` was `Vigente`, while historical states included `Cancelado` and `Quitado`. Do not equate `currentDebt` with overdue account debt; verify semantics. Do not expose `url`, `barCode` or customer-specific application identifiers in logs, diagnostics, or public docs. This endpoint is in Postman for testing; no Home Assistant entities are implemented yet.
