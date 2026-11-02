@@ -10,9 +10,15 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_EMAIL
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers import selector
 
 from .api import EdesurApi, EdesurAuthError, EdesurError
 from .const import AUTH_GOOGLE, CONF_AUTH_METHOD, CONF_SOCIAL_ID, DOMAIN
+
+
+SOCIAL_ID_SELECTOR = selector.TextSelector(
+    selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
+)
 
 
 class EdesurConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -42,7 +48,7 @@ class EdesurConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_show_form(
                     step_id="google",
                     data_schema=vol.Schema({vol.Required(CONF_EMAIL): str,
-                                            vol.Required(CONF_SOCIAL_ID): str}),
+                                            vol.Required(CONF_SOCIAL_ID): SOCIAL_ID_SELECTOR}),
                     errors=errors,
                 )
             api = EdesurApi(async_get_clientsession(self.hass))
@@ -67,7 +73,7 @@ class EdesurConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="google",
             data_schema=vol.Schema({
                 vol.Required(CONF_EMAIL): str,
-                vol.Required(CONF_SOCIAL_ID): str,
+                vol.Required(CONF_SOCIAL_ID): SOCIAL_ID_SELECTOR,
             }),
             errors=errors,
         )
