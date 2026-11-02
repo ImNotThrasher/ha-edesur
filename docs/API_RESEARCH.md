@@ -44,7 +44,7 @@ Implemented: latest active consumption, latest cumulative active reading, last r
 **Pending verification:**
 - `PlanPagos/GetDeudaAsync` returned `successful: false` and `ValorBusqueda` validation error. The endpoint expects a `supply_number` whose derivation and relationship to `contractAccount` are unknown; HTTP method and request schema also need confirmation. Do not generate or guess identifiers.
 - Debt, unpaid invoice status, overdue amounts and account balance cannot be derived safely from invoice totals, due dates and payment history alone. Wait for a validated authoritative debt/status response.
-- `activeConsumption` and `activeReading` appear energy-related, but units have not been explicitly verified; do not advertise kWh or Home Assistant energy statistics yet.
+- `activeConsumption` is confirmed as period consumption in kWh; it is not a monotonically increasing meter total. `activeReading` still needs independent confirmation before assigning its unit or statistics semantics.
 - `remainingConsumption`, `activeConsumptionHP`, `activeConsumptionNight`, `nightReading`, `peakReading`, `remainingReading` require business-semantic verification before mapping.
 - Full historical series, tariff group, social rate and electrodependence metadata may be exposed later after reviewing privacy and appropriate entity models.
 
