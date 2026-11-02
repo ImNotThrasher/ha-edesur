@@ -107,7 +107,7 @@ The integration discovers linked contracts and creates a device for each one. En
 | Suministros | Number of linked electricity contracts |
 | Medidor | Meter identifier for a contract |
 | Último consumo | Consumption reported for the latest reading period, in kWh |
-| Lectura del medidor | Latest cumulative meter reading reported by Edesur; **not** the period consumption |
+| Última lectura del medidor | Latest cumulative meter reading reported by Edesur; **not** the period consumption |
 | Fecha de última lectura | Date of the latest reading |
 | Importe de última factura | Latest invoice amount in ARS |
 | Emisión de última factura | Invoice issue date |
