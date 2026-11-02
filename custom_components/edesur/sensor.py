@@ -147,7 +147,10 @@ class EdesurDataSensor(EdesurAccountSensor):
             self._attr_device_class = SensorDeviceClass.MONETARY
         elif kind.startswith("date"):
             self._attr_device_class = SensorDeviceClass.DATE
-        # Consumption and meter readings have not yet had their units confirmed.
+        elif key == "consumption":
+            self._attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+            self._attr_device_class = SensorDeviceClass.ENERGY
+            # Period consumption is not a monotonically increasing total.
 
     @property
     def native_value(self) -> float | date | str | None:
