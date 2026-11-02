@@ -20,6 +20,7 @@
 
 - [Releases](#releases)
 - [Features](#features)
+- [Screenshots](#screenshots)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Authentication: find your socialMediaId](#authentication-find-your-socialmediaid)
@@ -47,6 +48,20 @@ Releases will be published from the stable `main` branch once validation is comp
 - Historical consumption readings imported as **external long-term statistics** for native Home Assistant statistics graphs.
 
 **Read-only:** the integration does not pay invoices, modify account details or control electricity supply.
+
+## Screenshots
+
+The screenshots below show an example Home Assistant dashboard with multiple Edesur supplies and the entities created by the integration. The dashboard is a user-configured Lovelace view, **not** a dashboard automatically installed by Edesur.
+
+### Electricity dashboard
+
+![Home Assistant electricity dashboard showing supplies, invoice information and historical consumption](docs/images/edesur-dashboard.jpg)
+
+### Integration entities
+
+![Home Assistant Edesur device entities and sensor states](docs/images/edesur-entities.jpg)
+
+> Screenshots are illustrative. Available entities and values depend on the Edesur account and the data returned by its API.
 
 ## Requirements
 
