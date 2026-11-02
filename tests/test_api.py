@@ -23,7 +23,9 @@ if PACKAGE + ".api" not in sys.modules:
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
 
-from edesur.api import EdesurApi, EdesurAuthError, EdesurConnectionError
+EdesurApi = sys.modules[PACKAGE + ".api"].EdesurApi
+EdesurAuthError = sys.modules[PACKAGE + ".api"].EdesurAuthError
+EdesurConnectionError = sys.modules[PACKAGE + ".api"].EdesurConnectionError
 
 
 class ApiValidationTests(unittest.IsolatedAsyncioTestCase):
