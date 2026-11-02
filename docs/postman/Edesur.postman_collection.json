@@ -1,0 +1,342 @@
+{
+  "info": {
+    "name": "Edesur Argentina API — Integration Test Suite",
+    "description": "Colección unificada para probar el flujo de la integración Home Assistant sin interfaz. No exportar valores locales ni tokens. Autenticación Google/social observada; otros métodos pendientes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearer_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://ed.edesur.com.ar/api",
+      "type": "string"
+    },
+    {
+      "key": "social_email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "social_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "origin_channel",
+      "value": "Wbns-RgKfqY~",
+      "type": "string"
+    },
+    {
+      "key": "bearer_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "account_ids",
+      "value": "[]",
+      "type": "string"
+    },
+    {
+      "key": "client_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "meter_number",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "supply_number",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 — Autenticación",
+      "item": [
+        {
+          "name": "01 · Google social — Obtener token",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "https://ov.edesur.com.ar"
+              },
+              {
+                "key": "Referer",
+                "value": "https://ov.edesur.com.ar/"
+              },
+              {
+                "key": "x-origin-channel",
+                "value": "{{origin_channel}}"
+              }
+            ],
+            "url": "{{base_url}}/Usuario/login-social-media",
+            "description": "Usar únicamente credenciales de la cuenta propia. social_id debe obtenerse legítimamente del flujo social; este POST no implementa OAuth.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"socialMediaEmail\": \"{{social_email}}\",\n  \"socialMediaId\": \"{{social_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx', () => pm.expect(pm.response.code).to.be.within(200,299));",
+                  "let data = {}; try { data = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && typeof data.token === 'string' && data.token.trim()) { pm.collectionVariables.set('bearer_token',data.token.trim()); } else { pm.collectionVariables.unset('bearer_token'); }",
+                  "pm.test('Token recibido',()=>pm.expect(data.token).to.be.a('string').and.not.empty);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 — Contratos",
+      "item": [
+        {
+          "name": "02 · Descubrir contratos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/Cliente/supply-retrieve/{{social_email}}",
+            "description": "Almacena la lista de cuentas y selecciona la primera para pruebas manuales. Para verificar las demás, cambiar client_id."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx', () => pm.expect(pm.response.code).to.be.within(200,299));",
+                  "const data=pm.response.json();",
+                  "const ids=Array.isArray(data.supplies)?data.supplies.map(x=>String(x.contractAccount||'')).filter(Boolean):[];",
+                  "pm.collectionVariables.set('account_ids',JSON.stringify(ids));",
+                  "if(ids.length){pm.collectionVariables.set('client_id',ids[0]);}else{pm.collectionVariables.unset('client_id');}",
+                  "pm.test('Al menos un contrato',()=>pm.expect(ids.length).to.be.above(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 · Detalle de contrato",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/Cliente/get-client/{{client_id}}",
+            "description": "No confundir contractAccount, meterNumber y nroSuministro."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx', () => pm.expect(pm.response.code).to.be.within(200,299));",
+                  "const data=pm.response.json();",
+                  "if(data.meterNumber) pm.collectionVariables.set('meter_number',String(data.meterNumber));",
+                  "pm.test('Identificador de contrato',()=>pm.expect(data.contractAccount).to.exist);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 — Historial y estado",
+      "item": [
+        {
+          "name": "04 · Lecturas históricas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/Cliente/get-historical-readings/{{client_id}}",
+            "description": "Validar estructura real de respuesta antes de mapear sensores."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx', () => pm.expect(pm.response.code).to.be.within(200,299));",
+                  "pm.test('Respuesta JSON',()=>pm.expect(()=>pm.response.json()).not.to.throw());"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05 · Facturas históricas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/Cliente/get-historical-invoices/{{client_id}}",
+            "description": "Validar estructura real de respuesta antes de mapear sensores."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx', () => pm.expect(pm.response.code).to.be.within(200,299));",
+                  "pm.test('Respuesta JSON',()=>pm.expect(()=>pm.response.json()).not.to.throw());"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "06 · Pagos históricos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/Cliente/get-historical-payments/{{client_id}}",
+            "description": "Validar estructura real de respuesta antes de mapear sensores."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx', () => pm.expect(pm.response.code).to.be.within(200,299));",
+                  "pm.test('Respuesta JSON',()=>pm.expect(()=>pm.response.json()).not.to.throw());"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07 · Estado del suministro",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/Cliente/get-cut-supply/{{client_id}}",
+            "description": "Validar semántica real del estado."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx', () => pm.expect(pm.response.code).to.be.within(200,299));",
+                  "pm.test('Respuesta JSON',()=>pm.expect(()=>pm.response.json()).not.to.throw());"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 — Deuda (experimental)",
+      "item": [
+        {
+          "name": "08 · Deuda — método por verificar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/PlanPagos/GetDeudaAsync",
+            "description": "Método POST inferido, no confirmado. Requiere supply_number (no asumir que equivale a client_id).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nroSuministro\": \"{{supply_number}}\",\n  \"tipoBusqueda\": \"nro_suministro\",\n  \"valorBusqueda\": \"{{supply_number}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx', () => pm.expect(pm.response.code).to.be.within(200,299));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
