@@ -62,6 +62,9 @@ SENSORS = {
     "second_due": ("Segundo vencimiento", "invoices", "invoices", "issueDate", "secondDueDate", "date_local", "mdi:calendar-clock"),
     "payment_amount": ("Último pago", "payments", "payments", "paymentDate", "amount", "money", "mdi:cash-check"),
     "payment_date": ("Fecha del último pago", "payments", "payments", "paymentDate", "paymentDate", "date_iso", "mdi:calendar-check"),
+    "debt_status": ("Estado de deuda", "debts", None, None, "message", "debt", "mdi:cash-check"),
+    "formality_status": ("Estado del último trámite", "formalities", "formalities", "openingDate", "statusDescription", "text", "mdi:clipboard-check-outline"),
+    "formality_date": ("Fecha del último trámite", "formalities", "formalities", "openingDate", "openingDate", "date_iso", "mdi:calendar"),
     "supply_status": ("Estado del suministro", "supply_status", None, None, "status", "text", "mdi:transmission-tower"),
 }
 
@@ -159,6 +162,12 @@ class EdesurDataSensor(EdesurAccountSensor):
         item = _latest(source, collection, date_key, "%d/%m/%Y" if section == "invoices" else None) if collection else source
         if not isinstance(item, dict):
             return None
+        if kind == "debt":
+            if item.get("debts") is None and isinstance(item.get("message"), str) and "no posee deuda" in item["message"].casefold():
+                return "Sin deuda registrada"
+            if isinstance(item.get("debts"), list) and item["debts"]:
+                return "Deuda registrada"
+            return None
         raw = item.get(field)
         if kind in ("money", "number"):
             return _number(raw)
@@ -175,6 +184,13 @@ class EdesurDataSensor(EdesurAccountSensor):
         if self._key.startswith("invoice") or self._key in ("first_due", "second_due"):
             item = _latest(source.get("invoices"), "invoices", "issueDate", "%d/%m/%Y")
             return {"invoice_number": item["number"]} if item.get("number") else {}
+        if self._key == "consumption":
+            records = source.get("readings")
+            items = records.get("readings", []) if isinstance(records, dict) else []
+            return {"history": [{"date": x["readingDate"][:10], "kwh": float(x["activeConsumption"])} for x in items if isinstance(x, dict) and isinstance(x.get("readingDate"), str) and _number(x.get("activeConsumption")) is not None][:36]}
+        if self._key == "formality_status":
+            item = _latest(source.get("formalities"), "formalities", "openingDate")
+            return {k: item[k] for k in ("caseNumber", "reason", "subReason") if item.get(k) is not None}
         if self._key.startswith("payment"):
             item = _latest(source.get("payments"), "payments", "paymentDate")
             return {k: item[k] for k in ("paymentTipe", "entity") if item.get(k) is not None}
