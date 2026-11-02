@@ -29,9 +29,10 @@ Currently implemented:
 - Google/social account login using a manually supplied Edesur social identifier.
 - Automatic discovery of multiple electricity contracts linked to an account.
 - Periodic refresh of account data.
-- Sensors for linked contracts and meter numbers.\n- Per-contract sensors for latest consumption and meter reading, reading date, latest invoice amount and dates, latest payment amount and date, and supply status.
+- Sensors for linked contracts and meter numbers.
+- Per-contract sensors for latest consumption and meter reading, reading date, latest invoice amount and dates, latest payment amount and date, and supply status.
 
-Historical API responses are queried; latest values are exposed as sensors. Debt, outstanding balances and payment status remain unverified and are not exposed.
+Historical API responses are queried; latest values are exposed as sensors. Debt status is available when the API explicitly reports no debt or returns a nonempty debts list; amounts and per-invoice paid status are not inferred. Formality status is also exposed.
 
 ## Installation
 
@@ -57,7 +58,12 @@ The integration defines:
 | Entity | Description |
 | --- | --- |
 | Linked contracts | Number of contracts associated with the account |
-| Meter number | Meter identifier for each discovered contract, when available |\n| Latest consumption and reading | Most recent API-reported active consumption and cumulative reading (active consumption in kWh; cumulative reading unit not yet confirmed) |\n| Last reading date | Date of the latest meter reading |\n| Latest invoice | Amount in ARS, issue date, first and second due dates |\n| Latest payment | Amount in ARS and payment date |\n| Supply status | Raw status reported by Edesur |
+| Meter number | Meter identifier for each discovered contract, when available |
+| Latest consumption and reading | Most recent API-reported active consumption and cumulative reading (active consumption in kWh; cumulative reading unit not yet confirmed) |
+| Last reading date | Date of the latest meter reading |
+| Latest invoice | Amount in ARS, issue date, first and second due dates |
+| Latest payment | Amount in ARS and payment date |
+| Supply status | Raw status reported by Edesur |
 
 Sensors are created separately for each contract. Invoice number and payment method are exposed as limited attributes. Download URLs are not exposed.
 
@@ -67,7 +73,11 @@ Sensors are created separately for each contract. Invoice number and payment met
 - Only the manual Google/social identifier method is implemented; email/password login is not supported.
 - Edesur's undocumented API can change or become unavailable.
 - The integration does not control electricity supply, make payments, or modify account details.
-- Only the latest reading, invoice and payment are exposed; full history is not yet modeled as statistics or entities.\n- Period consumption (`activeConsumption`) is confirmed in kWh and exposed as an energy sensor without `total_increasing` state class. Cumulative meter reading (`activeReading`) still needs separate unit and semantics verification.\n- The debt endpoint requires an unresolved `supply_number` distinct from the contract account; its request and identifier mapping are not verified.\n- Outstanding balance, whether an invoice is unpaid, and overdue debt cannot be inferred reliably from invoice dates or payment history; no debt or unpaid-status sensor is provided.\n- `remainingConsumption` and peak/night reading semantics remain unverified and are not exposed.
+- Only the latest reading, invoice and payment are exposed; full history is not yet modeled as statistics or entities.
+- Period consumption (`activeConsumption`) is confirmed in kWh and exposed as an energy sensor without `total_increasing` state class. Cumulative meter reading (`activeReading`) still needs separate unit and semantics verification.
+- The legacy debt endpoint requires an unresolved `supply_number` distinct from the contract account; its request and identifier mapping are not verified.
+- Outstanding balance, whether an invoice is unpaid, and overdue debt cannot be inferred reliably from invoice dates or payment history; no debt or unpaid-status sensor is provided.
+- `remainingConsumption` and peak/night reading semantics remain unverified and are not exposed.
 
 ## Privacy and security
 
@@ -84,3 +94,7 @@ Bug reports and contributions are welcome through [GitHub Issues](https://github
 The source code is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. See [LICENSE](LICENSE).
 
 **Edesur** and any associated names, trademarks, service marks, and logos are the property of their respective owners. This is an independent, community-developed project and is **not affiliated with, endorsed by, sponsored by, or officially supported by Edesur**. References to Edesur are for identification and compatibility purposes only. The software license does not grant permission to use third-party trademarks or logos.
+
+## Debt and formalities
+
+The integration queries `GET /PlanPagos/get-debts` with `contractAccount`, `serchType=1` and `value` for each account. An explicit no-debt message is mapped to **Sin deuda registrada**. A nonempty `debts` array is mapped to **Deuda registrada**, without inferring the amount or invoice-level payment state. Unrecognized responses remain unknown. `GET /Cliente/get-formalities` exposes the most recent formality status/date and minimal metadata. Period consumption history (up to 36 readings) is available as a sensor attribute for dashboard charts; this is not a Home Assistant long-term statistics series.
