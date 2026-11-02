@@ -1,0 +1,29 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Edesur",
+        "description": "Elegí el método de inicio de sesión. Por ahora solamente está disponible Google.",
+        "data": {
+          "auth_method": "Método de autenticación"
+        }
+      },
+      "google": {
+        "title": "Google (inicio de sesión social)",
+        "description": "Ingresá el correo y el identificador social de tu propia cuenta. La integración todavía no implementa el consentimiento OAuth de Google.",
+        "data": {
+          "email": "Correo electrónico",
+          "social_id": "Identificador social"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "No se pudo iniciar sesión.",
+      "cannot_connect": "No se pudo conectar con Edesur.",
+      "no_accounts": "No se encontraron suministros asociados."
+    },
+    "abort": {
+      "already_configured": "Esta cuenta ya está configurada."
+    }
+  }
+}
