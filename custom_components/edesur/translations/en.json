@@ -9,18 +9,19 @@
         }
       },
       "google": {
-        "title": "Google (social login)",
-        "description": "Enter your account email and social identifier. Google OAuth consent is not yet implemented.",
+        "title": "Google (manual social ID)",
+        "description": "Sign in to Edesur with Google in your browser, then copy the socialMediaId (including google_) from DevTools. No Google Cloud configuration is needed.",
         "data": {
           "email": "Email",
-          "social_id": "Social identifier"
+          "social_id": "Edesur socialMediaId (google_...)"
         }
       }
     },
     "error": {
       "invalid_auth": "Unable to sign in.",
       "cannot_connect": "Unable to connect to Edesur.",
-      "no_accounts": "No linked supplies were found."
+      "no_accounts": "No linked supplies were found.",
+      "invalid_social_id": "Enter the full socialMediaId starting with google_."
     },
     "abort": {
       "already_configured": "This account is already configured."
