@@ -49,3 +49,10 @@ Implemented: latest active consumption, latest cumulative active reading, last r
 - Full historical series, tariff group, social rate and electrodependence metadata may be exposed later after reviewing privacy and appropriate entity models.
 
 Never commit raw API response examples containing customer names, addresses, invoice download URLs, or authentication values.
+
+## Additional observed endpoints (2026-11)
+
+- `GET /PlanPagos/get-debts?contractAccount={account}&serchType=1&value={account}`: observed `{ "message": "Al día de la fecha, su cuenta no posee deuda.", "debts": null }`. This is authoritative for no debt at query time, not proof of an individual invoice payment. Nonempty debt list is treated as debt present; amount/structure not validated. Legacy `GetDeudaAsync` retained only for research.
+- `GET /Cliente/get-formalities/{account}`: `{ "formalities": [{ "attentionType": "Requerimiento", "status": "ESTA007", "openingDate": "...", "closingDate": "...", "caseNumber": "...", "reason": "Comercial", "subReason": "Adhesión a E-Factura Digital", "statusDescription": "Cerrado", "claimNumber": null, "reasonCode": "MOT003", "subReasonCode": "ATAR183" }] }`. Only latest status/date and minimal case metadata exposed.
+- Last payment vs last invoice equality is not a validated paid indicator. Never infer paid status from matching amounts or elapsed due dates.
+- Historical consumption is available as a limited `history` attribute on latest-consumption sensor; do not interpret zero as missing without evidence.
