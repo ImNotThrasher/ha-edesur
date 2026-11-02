@@ -70,7 +70,7 @@ Releases will be published from the stable `main` branch once validation is comp
 
 [![Add integration to Home Assistant](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=edesur)
 
-> **Note:** The repository is not currently listed in the default HACS catalog. A custom repository is sufficient when the repository is accessible to your GitHub account; other users require a publicly accessible repository. The buttons open your own Home Assistant instance; they do not install anything by themselves.
+> **Note:** The repository is not currently listed in the default HACS catalog. A custom repository is sufficient when the repository is accessible to your GitHub account; other users require a publicly accessible repository. The buttons open your own Home Assistant instance; they do not install anything by themselves. The integration includes a local `brand/icon.png` for Home Assistant 2026.3+; depending on your HACS version, its repository listing may still show a placeholder icon.
 
 ### Alternative: manual installation
 
@@ -157,7 +157,7 @@ The configuration form masks `socialMediaId` while you enter it; this does **not
 
 ## Development
 
-GitHub Actions validates unit tests, critical Ruff checks, Python compilation, Hassfest and HACS compatibility on pushes and pull requests. A successful CI run does not guarantee that the unofficial Edesur API will remain compatible.
+GitHub Actions runs unit tests, critical Ruff checks, Python compilation and Hassfest on pushes and pull requests. HACS catalog validation is configured for public repositories; while this repository is private, that job is skipped. A successful CI run does not guarantee that the unofficial Edesur API will remain compatible.
 
 The `dev` branch is used for ongoing development and testing. The `main` branch is reserved for reviewed, stable changes. Do not assume a change in `dev` has been released.
 
