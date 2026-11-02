@@ -36,7 +36,7 @@ class EdesurApi:
         self, method: str, path: str, *, payload: dict[str, Any] | None = None,
         authenticated: bool = True,
     ) -> Any:
-        headers = {"Accept": "application/json"}
+        headers = {"Accept": "application/json", "x-origin-channel": ORIGIN_CHANNEL}
         if authenticated:
             if not self._token:
                 raise EdesurAuthError("Missing authentication token")
