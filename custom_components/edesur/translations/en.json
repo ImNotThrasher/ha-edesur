@@ -1,0 +1,29 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Edesur",
+        "description": "Select a login method. Only Google is currently available.",
+        "data": {
+          "auth_method": "Authentication method"
+        }
+      },
+      "google": {
+        "title": "Google (social login)",
+        "description": "Enter your account email and social identifier. Google OAuth consent is not yet implemented.",
+        "data": {
+          "email": "Email",
+          "social_id": "Social identifier"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Unable to sign in.",
+      "cannot_connect": "Unable to connect to Edesur.",
+      "no_accounts": "No linked supplies were found."
+    },
+    "abort": {
+      "already_configured": "This account is already configured."
+    }
+  }
+}
