@@ -4,7 +4,7 @@
 
 **Unofficial, community-maintained Home Assistant integration** for Edesur Argentina.
 
-Edesur (Empresa Distribuidora de Energía Sur Sociedad Anónima) is a private company providing the public service of electricity distribution and commercialization in Argentina. This integration aims to make information about your Edesur electricity accounts available in Home Assistant.
+Edesur (Empresa Distribuidora de Energía Sur Sociedad Anónima) is an electricity distributor serving part of the Buenos Aires metropolitan area in Argentina. This integration aims to make information about your Edesur electricity accounts available in Home Assistant.
 
 > [!IMPORTANT]
 > This project is **not an official Edesur integration** and is not developed, endorsed, supported, or affiliated with Edesur. It uses an undocumented API that may change without notice.
