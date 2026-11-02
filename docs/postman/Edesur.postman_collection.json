@@ -292,14 +292,67 @@
               }
             }
           ]
+        },
+        {
+          "name": "10 · Trámites",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/Cliente/get-formalities/{{client_id}}",
+            "description": "Historial de trámites, estado y número de caso."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx',()=>pm.expect(pm.response.code).to.be.within(200,299));",
+                  "pm.test('Lista de trámites',()=>pm.expect(pm.response.json().formalities).to.be.an('array'));"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "name": "04 — Deuda (experimental)",
+      "name": "04 — Deuda",
       "item": [
         {
-          "name": "08 · Deuda — método por verificar",
+          "name": "08 · Estado de deuda (validado sin deuda)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/PlanPagos/get-debts?contractAccount={{client_id}}&serchType=1&value={{client_id}}",
+            "description": "Si message indica no posee deuda y debts es null, se interpreta sin deuda. Formato de deudas positivas pendiente de validar."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx',()=>pm.expect(pm.response.code).to.be.within(200,299));",
+                  "const data=pm.response.json();",
+                  "pm.test('Respuesta de deuda',()=>pm.expect(data).to.have.property('debts'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "09 · Deuda anterior (experimental, legado)",
           "request": {
             "method": "POST",
             "header": [
