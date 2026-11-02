@@ -1,0 +1,30 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Edesur",
+        "description": "Select a login method. Only Google is currently available.",
+        "data": {
+          "auth_method": "Authentication method"
+        }
+      },
+      "google": {
+        "title": "Google (manual social ID)",
+        "description": "Sign in to Edesur with Google in your browser, then copy the socialMediaId (including google_) from DevTools. No Google Cloud configuration is needed.",
+        "data": {
+          "email": "Email",
+          "social_id": "Edesur socialMediaId (google_...)"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Unable to sign in.",
+      "cannot_connect": "Unable to connect to Edesur.",
+      "no_accounts": "No linked supplies were found.",
+      "invalid_social_id": "Enter the full socialMediaId starting with google_."
+    },
+    "abort": {
+      "already_configured": "This account is already configured."
+    }
+  }
+}

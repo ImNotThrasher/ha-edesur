@@ -1,0 +1,30 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Edesur",
+        "description": "Elegí el método de inicio de sesión. Por ahora solamente está disponible Google.",
+        "data": {
+          "auth_method": "Método de autenticación"
+        }
+      },
+      "google": {
+        "title": "Google (identificador manual)",
+        "description": "Iniciá sesión en Edesur con Google desde el navegador y copiá socialMediaId desde DevTools, incluyendo google_. No hace falta configurar Google Cloud.",
+        "data": {
+          "email": "Correo electrónico",
+          "social_id": "socialMediaId de Edesur (google_...)"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "No se pudo iniciar sesión.",
+      "cannot_connect": "No se pudo conectar con Edesur.",
+      "no_accounts": "No se encontraron suministros asociados.",
+      "invalid_social_id": "Ingresá el socialMediaId completo, empezando por google_."
+    },
+    "abort": {
+      "already_configured": "Esta cuenta ya está configurada."
+    }
+  }
+}
