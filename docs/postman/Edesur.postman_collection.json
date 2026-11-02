@@ -318,6 +318,38 @@
               }
             }
           ]
+        },
+        {
+          "name": "11 · Convenios y planes de pago",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "x-origin-channel",
+                "value": "{{origin_channel}}"
+              }
+            ],
+            "url": "{{base_url}}/PlanPagos/retrieve-agreement/{{client_id}}",
+            "description": "Devuelve agreements[] históricos y current (convenio actual). No asumir que currentDebt equivale a deuda vencida. No almacenar URLs de descarga ni códigos de barras en el repositorio."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx',()=>pm.expect(pm.response.code).to.be.within(200,299));",
+                  "const data=pm.response.json();",
+                  "pm.test('Convenios históricos',()=>pm.expect(data.agreements).to.be.an('array'));",
+                  "pm.test('Campo current',()=>pm.expect(data).to.have.property('current'));"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
