@@ -35,6 +35,5 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Release in-memory state when the config entry is removed."""
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unloaded:
-        entry.async_unload_callbacks()
         hass.data.get(DOMAIN, {}).pop(entry.entry_id, None)
     return unloaded
