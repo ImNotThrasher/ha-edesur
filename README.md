@@ -14,7 +14,7 @@
 **Unofficial Home Assistant integration for Edesur Argentina.** Read electricity-account information, invoices, payments, meter readings, debt and supply status, and historical consumption from the Edesur online portal.
 
 > [!IMPORTANT]
-> This is an independent community project, **not affiliated with, endorsed by, or supported by Edesur**. It relies on an undocumented API that can change without notice. Version 0.1.0 is experimental; not every feature has been independently tested across multiple accounts or installations.
+> This is an independent community project, **not affiliated with, endorsed by, or supported by Edesur**. It relies on an undocumented API that can change without notice. The integration is experimental; not every feature has been independently tested across multiple accounts or installations.
 
 ## Contents
 
@@ -33,7 +33,7 @@
 
 ## Releases
 
-Releases will be published from the stable `main` branch once validation is complete. See [all releases](https://github.com/ImNotThrasher/ha-edesur/releases) or [latest release](https://github.com/ImNotThrasher/ha-edesur/releases/latest). **No release is being created by this change.** Until a release is available, use the HACS custom repository or manual installation instructions below.
+Versioned releases are published automatically from the stable `main` branch after successful validation when the integration version changes. See [all releases](https://github.com/ImNotThrasher/ha-edesur/releases) or the [latest release](https://github.com/ImNotThrasher/ha-edesur/releases/latest).
 
 ## Features
 
@@ -73,28 +73,37 @@ The screenshots below show an example Home Assistant dashboard with multiple Ede
 
 ## Installation
 
-### Recommended: HACS custom repository
+### Recommended: HACS
 
-[![Open repository in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ImNotThrasher&repository=ha-edesur&category=integration)
-
-1. Install [HACS](https://www.hacs.xyz/) if it is not already installed.
-2. Click **Open repository in HACS** above. If needed, add `https://github.com/ImNotThrasher/ha-edesur` in **HACS → ⋮ → Custom repositories**, with category **Integration**.
-3. Download **Edesur** from HACS and restart Home Assistant.
+1. In Home Assistant, open **HACS → Integrations → Explore & Download Repositories**.
+2. Search for **Edesur**, open the integration, and select **Download**.
+3. Follow the restart prompt, if shown.
 4. Obtain your `socialMediaId` as described in [Authentication](#authentication-find-your-socialmediaid).
-5. Click **Add Integration** below, or go to **Settings → Devices & services → Add integration**, search for **Edesur**, select **Google (social login)** and enter your email and social ID.
+5. Click **Add Integration** below, or open **Settings → Devices & services → Add integration**, search for **Edesur**, select **Google (social login)**, and enter your account email and social ID.
 
 [![Add integration to Home Assistant](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=edesur)
 
-> **Note:** The repository is not currently listed in the default HACS catalog. A custom repository is sufficient when the repository is accessible to your GitHub account; other users require a publicly accessible repository. The buttons open your own Home Assistant instance; they do not install anything by themselves. The integration includes a local `brand/icon.png` for Home Assistant 2026.3+; depending on your HACS version, its repository listing may still show a placeholder icon.
+### HACS custom repository fallback
 
-### Alternative: manual installation
+[![Open repository in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ImNotThrasher&repository=ha-edesur&category=integration)
 
-1. Download the source code from this repository.
-2. Copy the complete `custom_components/edesur` directory to `<config>/custom_components/edesur` on your Home Assistant server.
+If Edesur does not appear in HACS search yet, add it as a custom repository:
+
+1. Click **Open repository in HACS** above. Alternatively, open **HACS → three-dot menu → Custom repositories** and enter `https://github.com/ImNotThrasher/ha-edesur` with type **Integration**.
+2. Download Edesur from HACS and follow any restart prompt.
+3. Obtain your `socialMediaId` using the [Authentication](#authentication-find-your-socialmediaid) instructions.
+4. Add **Edesur** under **Settings → Devices & services → Add integration** and complete the configuration form.
+
+The repository has been accepted into the default HACS catalog, but it may take time for updated catalog data to reach individual installations. The buttons open your own Home Assistant instance; they do not install anything by themselves. The integration includes a local `brand/icon.png` for Home Assistant 2026.3+; depending on your HACS version, its repository listing may still show a placeholder icon.
+
+### Manual installation
+
+1. Download the [latest release](https://github.com/ImNotThrasher/ha-edesur/releases/latest).
+2. Copy the complete `custom_components/edesur` directory into the `custom_components` folder in your Home Assistant configuration directory.
 3. Restart Home Assistant.
 4. Go to **Settings → Devices & services → Add integration → Edesur** and complete the setup.
 
-Do not maintain two competing copies of the same integration. HACS simplifies future updates.
+Manual installation works without HACS, but updates must be installed manually. **Do not install both ways independently or delete an existing configuration entry when switching methods.** See [updating an existing installation](#updating-an-existing-installation).
 
 ## Authentication: find your socialMediaId
 
@@ -172,7 +181,7 @@ The configuration form masks `socialMediaId` while you enter it; this does **not
 
 ## Development
 
-GitHub Actions runs unit tests, critical Ruff checks, Python compilation and Hassfest on pushes and pull requests. HACS catalog validation is configured for public repositories; while this repository is private, that job is skipped. A successful CI run does not guarantee that the unofficial Edesur API will remain compatible.
+GitHub Actions runs unit tests, critical Ruff checks, Python compilation, Hassfest, and HACS validation on pushes and pull requests. All validation jobs run for this public repository. A successful CI run does not guarantee that the unofficial Edesur API will remain compatible.
 
 The `dev` branch is used for ongoing development and testing. The `main` branch is reserved for reviewed, stable changes. Do not assume a change in `dev` has been released.
 
