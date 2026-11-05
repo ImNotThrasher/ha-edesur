@@ -26,7 +26,7 @@ class EdesurConnectionError(EdesurError):
 
 
 class EdesurApi:
-    """Read-only client, except for the observed social-login POST."""
+    """Read-only data client supporting social and password authentication."""
 
     def __init__(self, session: ClientSession) -> None:
         self._session = session
@@ -80,6 +80,28 @@ class EdesurApi:
         if not isinstance(data, dict) or not isinstance(data.get("email"), str):
             raise EdesurAuthError("Unexpected login response")
         if data["email"].casefold() != email.casefold():
+            raise EdesurAuthError("Login returned a different account")
+        token = data.get("token")
+        if not isinstance(token, str) or not token.strip():
+            raise EdesurAuthError("Login did not return a valid token")
+        self._token = token.strip()
+
+    async def login_password(self, email: str, password: str) -> None:
+        """Authenticate through the standard Edesur login endpoint.
+
+        The response schema is assumed to match social login until verified
+        against a successful, redacted real-world response.
+        """
+        self._token = None
+        data = await self._request(
+            "POST", "/Usuario/login",
+            payload={"user": email, "password": password},
+            authenticated=False,
+        )
+        if not isinstance(data, dict):
+            raise EdesurAuthError("Unexpected login response")
+        returned_email = data.get("email")
+        if isinstance(returned_email, str) and returned_email.casefold() != email.casefold():
             raise EdesurAuthError("Login returned a different account")
         token = data.get("token")
         if not isinstance(token, str) or not token.strip():
