@@ -8,3 +8,4 @@ UPDATE_INTERVAL = timedelta(hours=6)
 CONF_AUTH_METHOD = "auth_method"
 CONF_SOCIAL_ID = "social_id"
 AUTH_GOOGLE = "google"
+AUTH_PASSWORD = "password"
