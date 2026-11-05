@@ -34,14 +34,14 @@ class UnloadTests(unittest.IsolatedAsyncioTestCase):
 
         make_module("homeassistant")
         make_module("homeassistant.config_entries", ConfigEntry=object)
-        make_module("homeassistant.const", Platform=types.SimpleNamespace(SENSOR="sensor"), CONF_EMAIL="email")
+        make_module("homeassistant.const", Platform=types.SimpleNamespace(SENSOR="sensor"), CONF_EMAIL="email", CONF_PASSWORD="password")
         make_module("homeassistant.core", HomeAssistant=object)
         make_module("homeassistant.helpers")
         make_module("homeassistant.helpers.aiohttp_client", async_get_clientsession=Mock())
         package = make_module("edesur")
         package.__path__ = [str(ROOT)]
         make_module("edesur.api", EdesurApi=object)
-        make_module("edesur.const", CONF_SOCIAL_ID="social_id", DOMAIN="edesur")
+        make_module("edesur.const", CONF_SOCIAL_ID="social_id", CONF_AUTH_METHOD="auth_method", AUTH_GOOGLE="google", AUTH_PASSWORD="password", DOMAIN="edesur")
         make_module("edesur.coordinator", EdesurCoordinator=object)
         make_module("edesur.statistics", import_consumption_statistics=Mock())
 
