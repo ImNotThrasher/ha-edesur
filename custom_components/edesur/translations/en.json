@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Edesur",
-        "description": "Select a login method. Only Google is currently available.",
+        "description": "Choose how to sign in to Edesur.",
         "data": {
           "auth_method": "Authentication method"
         }
@@ -14,6 +14,14 @@
         "data": {
           "email": "Email",
           "social_id": "Edesur socialMediaId (google_...)"
+        }
+      },
+      "password": {
+        "title": "Email and password",
+        "description": "Enter your Edesur account credentials (not your Google password).",
+        "data": {
+          "email": "Email",
+          "password": "Password"
         }
       }
     },
