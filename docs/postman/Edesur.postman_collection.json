@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Edesur Argentina API — Integration Test Suite",
-    "description": "Colección unificada para probar el flujo de la integración Home Assistant sin interfaz. No exportar valores locales ni tokens. Autenticación Google/social observada; otros métodos pendientes.",
+    "description": "Colección para probar los flujos Google/social y usuario/contraseña. No exportar credenciales ni tokens. La respuesta de /Usuario/login requiere verificación con una cuenta válida.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -27,6 +27,11 @@
     },
     {
       "key": "social_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "login_password",
       "value": "",
       "type": "string"
     },
@@ -116,6 +121,63 @@
                   "let data = {}; try { data = pm.response.json(); } catch (e) {}",
                   "if (pm.response.code >= 200 && pm.response.code < 300 && typeof data.token === 'string' && data.token.trim()) { pm.collectionVariables.set('bearer_token',data.token.trim()); } else { pm.collectionVariables.unset('bearer_token'); }",
                   "pm.test('Token recibido',()=>pm.expect(data.token).to.be.a('string').and.not.empty);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 · Usuario y contraseña — Obtener token",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "https://ov.edesur.com.ar"
+              },
+              {
+                "key": "Referer",
+                "value": "https://ov.edesur.com.ar/"
+              },
+              {
+                "key": "x-origin-channel",
+                "value": "{{origin_channel}}"
+              }
+            ],
+            "url": "{{base_url}}/Usuario/login",
+            "description": "Autenticación tradicional. Guardar login_password solo en variables locales, nunca exportar credenciales. Verificar que la respuesta incluya token y que permita descubrir contratos.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": \"{{social_email}}\",\n  \"password\": \"{{login_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 2xx', () => pm.expect(pm.response.code).to.be.within(200,299));",
+                  "let data = {}; try { data = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && typeof data.token === 'string' && data.token.trim()) { pm.collectionVariables.set('bearer_token',data.token.trim()); } else { pm.collectionVariables.unset('bearer_token'); }",
+                  "pm.test('Token recibido',()=>pm.expect(data.token).to.be.a('string').and.not.empty);",
+                  "pm.test('Respuesta JSON',()=>pm.expect(()=>pm.response.json()).not.to.throw());"
                 ]
               }
             }
