@@ -29,6 +29,35 @@ EdesurConnectionError = sys.modules[PACKAGE + ".api"].EdesurConnectionError
 
 
 class ApiValidationTests(unittest.IsolatedAsyncioTestCase):
+    async def test_password_login_uses_expected_endpoint_and_token(self):
+        client = EdesurApi(MagicMock())
+        client._request = AsyncMock(return_value={
+            "email": "example@example.invalid", "token": " test-token "
+        })
+        await client.login_password("example@example.invalid", "fake-password")
+        client._request.assert_awaited_once_with(
+            "POST", "/Usuario/login",
+            payload={"user": "example@example.invalid", "password": "fake-password"},
+            authenticated=False,
+        )
+        self.assertEqual(client._token, "test-token")
+
+    async def test_password_login_rejects_missing_token(self):
+        client = EdesurApi(MagicMock())
+        client._request = AsyncMock(return_value={"email": "example@example.invalid"})
+        with self.assertRaises(EdesurAuthError):
+            await client.login_password("example@example.invalid", "fake-password")
+        self.assertIsNone(client._token)
+
+    async def test_password_login_rejects_other_account(self):
+        client = EdesurApi(MagicMock())
+        client._request = AsyncMock(return_value={
+            "email": "other@example.invalid", "token": "fake-token"
+        })
+        with self.assertRaises(EdesurAuthError):
+            await client.login_password("example@example.invalid", "fake-password")
+        self.assertIsNone(client._token)
+
     async def test_missing_token_rejected(self):
         client = EdesurApi(MagicMock())
         with self.assertRaises(EdesurAuthError):
