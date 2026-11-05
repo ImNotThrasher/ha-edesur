@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Edesur",
-        "description": "Elegí el método de inicio de sesión. Por ahora solamente está disponible Google.",
+        "description": "Elegí cómo iniciar sesión en Edesur.",
         "data": {
           "auth_method": "Método de autenticación"
         }
@@ -14,6 +14,14 @@
         "data": {
           "email": "Correo electrónico",
           "social_id": "socialMediaId de Edesur (google_...)"
+        }
+      },
+      "password": {
+        "title": "Correo y contraseña",
+        "description": "Ingresá las credenciales de tu cuenta de Edesur (no las de Google).",
+        "data": {
+          "email": "Correo electrónico",
+          "password": "Contraseña"
         }
       }
     },
