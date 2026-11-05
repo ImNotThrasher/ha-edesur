@@ -18,7 +18,6 @@
 
 ## Contents
 
-- [Releases](#releases)
 - [Features](#features)
 - [Screenshots](#screenshots)
 - [Requirements](#requirements)
@@ -30,10 +29,6 @@
 - [Privacy and security](#privacy-and-security)
 - [Development](#development)
 - [License and trademarks](#license-and-trademarks)
-
-## Releases
-
-Versioned releases are published automatically from the stable `main` branch after successful validation when the integration version changes. See [all releases](https://github.com/ImNotThrasher/ha-edesur/releases) or the [latest release](https://github.com/ImNotThrasher/ha-edesur/releases/latest).
 
 ## Features
 
