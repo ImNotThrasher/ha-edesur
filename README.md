@@ -32,7 +32,7 @@
 
 ## Features
 
-- Google/social login using the Edesur portal's `socialMediaId` and account email.
+- Google/social login using the Edesur portal's `socialMediaId` and account email, or standard Edesur email/password login (response format pending live verification).
 - Automatic discovery of multiple electricity contracts linked to the same account.
 - Periodic cloud polling and automatic reauthentication on each update.
 - Separate Home Assistant devices and sensors per contract.
@@ -62,8 +62,8 @@ The screenshots below show an example Home Assistant dashboard with multiple Ede
 
 - Home Assistant with support for custom integrations.
 - An Edesur online account linked to one or more electricity contracts.
-- Access to the [Edesur online portal](https://ov.edesur.com.ar/) using **Sign in with Google**.
-- Your account email and `socialMediaId`, obtained from your own browser session (instructions below).
+- Access to the [Edesur online portal](https://ov.edesur.com.ar/) using **Sign in with Google** or a traditional Edesur account.
+- Your account email and either an Edesur password or a `socialMediaId` obtained from your own browser session (instructions below).
 - Internet connectivity from Home Assistant to Edesur's service.
 
 ## Installation
@@ -73,8 +73,8 @@ The screenshots below show an example Home Assistant dashboard with multiple Ede
 1. In Home Assistant, open **HACS → Integrations → Explore & Download Repositories**.
 2. Search for **Edesur**, open the integration, and select **Download**.
 3. Follow the restart prompt, if shown.
-4. Obtain your `socialMediaId` as described in [Authentication](#authentication-find-your-socialmediaid).
-5. Click **Add Integration** below, or open **Settings → Devices & services → Add integration**, search for **Edesur**, select **Google (social login)**, and enter your account email and social ID.
+4. For Google login, obtain your `socialMediaId` as described in [Authentication](#authentication-find-your-socialmediaid).
+5. Click **Add Integration** below, or open **Settings → Devices & services → Add integration**, search for **Edesur**, select **Google (social login)** or **Email and password**, and enter the corresponding credentials.
 
 [![Add integration to Home Assistant](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=edesur)
 
@@ -86,7 +86,7 @@ If Edesur does not appear in HACS search yet, add it as a custom repository:
 
 1. Click **Open repository in HACS** above. Alternatively, open **HACS → three-dot menu → Custom repositories** and enter `https://github.com/ImNotThrasher/ha-edesur` with type **Integration**.
 2. Download Edesur from HACS and follow any restart prompt.
-3. Obtain your `socialMediaId` using the [Authentication](#authentication-find-your-socialmediaid) instructions.
+3. For Google login, obtain your `socialMediaId` using the [Authentication](#authentication-find-your-socialmediaid) instructions.
 4. Add **Edesur** under **Settings → Devices & services → Add integration** and complete the configuration form.
 
 The repository has been accepted into the default HACS catalog, but it may take time for updated catalog data to reach individual installations. The buttons open your own Home Assistant instance; they do not install anything by themselves. The integration includes a local `brand/icon.png` for Home Assistant 2026.3+; depending on your HACS version, its repository listing may still show a placeholder icon.
@@ -102,7 +102,7 @@ Manual installation works without HACS, but updates must be installed manually. 
 
 ## Authentication: find your socialMediaId
 
-Edesur currently supports Google/social authentication through a **manually supplied identifier**. This integration does not implement Google's OAuth flow and does not ask for your Google password.
+Edesur supports Google/social authentication through a **manually supplied identifier** and traditional Edesur username/password authentication. Select the method matching your Edesur account. The integration does not implement Google's OAuth flow and does not ask for your Google password. The standard login endpoint's successful response format has not yet been independently verified.
 
 1. Open [https://ov.edesur.com.ar/](https://ov.edesur.com.ar/) in your browser.
 2. Open **Developer Tools** (usually **F12**) and select the **Network** tab. Enable **Preserve log** if the login redirects or reloads the page.
@@ -162,7 +162,7 @@ These observations are **kWh per Edesur reading period**, associated with the mo
 ## Limitations
 
 - Experimental unofficial API; availability, payloads and authentication behavior can change.
-- Only the manual Google/social ID login method is implemented. Password login and automatic Google OAuth are not supported.
+- Google/social ID login and standard Edesur password login are implemented; the password endpoint's successful response format still needs live verification. Automatic Google OAuth is not supported.
 - Debt status is **not proof that a particular invoice was paid**. Invoice/payment matching, outstanding balance and overdue amount cannot be reliably inferred from the latest invoice and payment.
 - Optional debt, agreement and formality endpoints may be unavailable for some accounts.
 - Historical statistics are observations assigned to reading dates, not a reconstructed hourly or daily electricity-usage series.
@@ -172,7 +172,7 @@ These observations are **kWh per Edesur reading period**, associated with the mo
 
 ## Privacy and security
 
-The configuration form masks `socialMediaId` while you enter it; this does **not** encrypt the value at rest. The account email and `socialMediaId` are stored in the Home Assistant configuration entry; Edesur session tokens are held in memory by the API client. Keep your Home Assistant backups, `.storage` directory and network captures private. Never open public issues containing real contract numbers, meter numbers, credentials, social IDs or API tokens.
+The configuration form masks `socialMediaId` while you enter it; this does **not** encrypt the value at rest. The account email and selected login credential (`socialMediaId` or password) are stored in the Home Assistant configuration entry; Edesur session tokens are held in memory by the API client. Keep your Home Assistant backups, `.storage` directory and network captures private. Never open public issues containing real contract numbers, meter numbers, credentials, social IDs or API tokens.
 
 ## Development
 
