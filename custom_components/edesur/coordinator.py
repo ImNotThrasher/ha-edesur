@@ -8,22 +8,28 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import EdesurApi, EdesurAuthError, EdesurError
-from .const import DOMAIN, UPDATE_INTERVAL
+from .const import AUTH_GOOGLE, AUTH_PASSWORD, DOMAIN, UPDATE_INTERVAL
 
 
 class EdesurCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
     """Poll all contracts; reauthenticate on each cycle until token TTL is known."""
 
-    def __init__(self, hass: HomeAssistant, api: EdesurApi, email: str, social_id: str) -> None:
+    def __init__(self, hass: HomeAssistant, api: EdesurApi, email: str, credential: str, auth_method: str = AUTH_GOOGLE) -> None:
         super().__init__(hass, logger=__import__("logging").getLogger(__name__),
                          name=DOMAIN, update_interval=UPDATE_INTERVAL)
         self.api = api
         self.email = email
-        self.social_id = social_id
+        self.credential = credential
+        self.auth_method = auth_method
 
     async def _async_update_data(self) -> dict[str, dict[str, Any]]:
         try:
-            await self.api.login_google(self.email, self.social_id)
+            if self.auth_method == AUTH_PASSWORD:
+                await self.api.login_password(self.email, self.credential)
+            elif self.auth_method == AUTH_GOOGLE:
+                await self.api.login_google(self.email, self.credential)
+            else:
+                raise UpdateFailed("Unsupported Edesur authentication method")
             accounts = await self.api.get_accounts(self.email)
             if not accounts:
                 raise UpdateFailed("No linked contracts were returned")
